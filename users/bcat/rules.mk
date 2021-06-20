@@ -1,5 +1,3 @@
-SRC += bcat.c
-
 # Enable Bootmagic Lite to consistently reset to bootloader and clear EEPROM.
 BOOTMAGIC_ENABLE = lite
 
@@ -16,17 +14,29 @@ NKRO_ENABLE = yes
 # Enable link-time optimization to reduce binary size.
 LTO_ENABLE = yes
 
-# Disable unused build options on all keyboards.
+# Include common utilities shared across all our keymaps.
+SRC += bcat.c
+
+# Include additional utilities that extend optional QMK features only enabled
+# on some keyboards.
+ifeq ($(strip $(RGBLIGHT_ENABLE)), yes)
+	SRC += bcat_rgblight.c
+endif
+
+# Disable unwanted build options on all keyboards. (Mouse keys are turned off
+# due to https://github.com/qmk/qmk_firmware/issues/8323, and the rest are
+# turned off to reduce firmware size.)
 COMMAND_ENABLE = no
 CONSOLE_ENABLE = no
 MOUSEKEY_ENABLE = no
 TERMINAL_ENABLE = no
 
-# Disable unused hardware options on all keyboards.
+# Disable unwanted hardware options on all keyboards. (Some keyboards turn
+# these features on by default even though they aren't actually required.)
 MIDI_ENABLE = no
 SLEEP_LED_ENABLE = no
 
-# Disable other unused options on all keyboards.
+# Disable other unused functionality on all keyboard to reduce firmware size.
 API_SYSEX_ENABLE = no
 AUTO_SHIFT_ENABLE = no
 COMBO_ENABLE = no
